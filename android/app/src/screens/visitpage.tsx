@@ -27,7 +27,7 @@ const Visitpage :FC <navi>= ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <ImageBackground source={{ uri: "https://i.pinimg.com/736x/6a/74/e2/6a74e2883c27713ece3948ecd383d08e.jpg" }} style={{ flex: 1 }}>
+            <ImageBackground source={{ uri: "https://w0.peakpx.com/wallpaper/159/290/HD-wallpaper-bulbasaur-pokemon.jpg" }} style={{ flex: 1 }}>
                 <View>
                     <Text style={styles.text}> PoKéMoN </Text>
                     <Icon name="pokeball" size={70} color="red" style={styles.icon} />
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     },
     buttontext: {
         fontWeight: "bold",
-        color: "black",
+        color: "yellow",
         textAlign: "center",
         fontSize: 20,
         padding: 40

@@ -12,5 +12,5 @@ export default function Data_reducer(state=IS,action){
             return {...state, items : action.payload};
 
         default:return state;
-    }
+    }                      
 }

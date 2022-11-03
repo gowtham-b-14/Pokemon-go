@@ -26,9 +26,8 @@ export interface navi {
 
 const Login :FC<navi>= ({ navigation,route}) => {
   
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [userdetails, setUserDetails] = useState(null)
+  const [email, setEmail] = useState<String>("");
+  const [password, setPassword] = useState<String>("");
   const [eyeopen, setEyeopen] = useState(false)
   const [isusernamevalid, setUsernamevalid] = useState(false)
   const [ispasswordvalid, setPasswordValid] = useState(false)
@@ -42,6 +41,7 @@ const Login :FC<navi>= ({ navigation,route}) => {
     setPassword(pass);
   }
   //console.log(userdetails)
+  console.log("Login pagge oppened")
   const login=()=>{
     console.log(route.params)
     if(route.params===undefined){
@@ -49,7 +49,7 @@ const Login :FC<navi>= ({ navigation,route}) => {
     }
     else if(route.params.email===email && route.params.password===password){
       ToastAndroid.show("Login successfully", ToastAndroid.LONG)
-      navigation.navigate('Home')
+      navigation.navigate('Totalpage')
     }else{
       alert("Invalid email or password.")
     }
@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
     borderRadius: 10,
+    color:"black"
 
   },
   buttontext: {

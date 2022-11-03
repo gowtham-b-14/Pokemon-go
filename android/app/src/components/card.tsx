@@ -17,28 +17,34 @@ import {fetchProductsBegin} from '../redux/actions/action';
 import { bindActionCreators } from 'redux';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { State } from '../redux/reducers';
+import { RootState } from '../redux/store/store';
+import { fetchListOfPokemons } from '../redux/slice/slice';
+import { RouteProp } from '@react-navigation/native';
 
 export interface navi {
     navigation: StackNavigationProp<ModalNavigatorParamsList,'Details'>
+    route: RouteProp<ModalNavigatorParamsList, 'Home'>
 }
 
-const Cards: FC<navi> = ({ navigation }) => {
+const Cards: FC<navi> = ({ navigation,route }) => {
     
-    const returnmessage:{ [k : string] : any} = useSelector((state: State) => state.Data_reducer)
+    const returnmessage= useSelector((state: RootState) => state.pokemon.pokemonDetails)
     const [details, setDetails] = useState<any>([])
     const dispatch = useDispatch();
     //let detail:object=({})
     //console.log(detail)
+    //console.log(route.params?.total)
+    //console.log(route.params?.total)
     const DATA = [{
         title: "Pokemon",
         data: details
     }]
     useEffect(() => {
-        dispatch(fetchProductsBegin())
+        dispatch(fetchListOfPokemons(route.params?.total))
     }, [])
 
     useEffect(()=>{
-        setDetails(returnmessage.items)
+        setDetails(returnmessage)
     },[returnmessage])
     
    //console.log(details)

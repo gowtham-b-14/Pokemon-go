@@ -1,174 +1,179 @@
-import React, { FC, useState, useEffect } from 'react';
-import {
-    ImageBackground,
-    ListRenderItem,
-    SectionList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    Image,
-    Pressable
-
-} from 'react-native';
-import axios from "axios";
-import {
-    BarChart,
-    LineChart,
-    ProgressChart,
-
-} from "react-native-chart-kit";
-import { StackNavigationProp } from '@react-navigation/stack';
-import { ModalNavigatorParamsList } from '../types/types';
-import { RouteProp } from '@react-navigation/native';
+import React, {FC, useState, useEffect, useMemo} from 'react';
+import {Dimensions, StyleSheet, Text, View, Image} from 'react-native';
+import axios from 'axios';
+import {BarChart, LineChart, ProgressChart} from 'react-native-chart-kit';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {ModalNavigatorParamsList} from '../types/types';
+import {RouteProp} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import MenuDrawer from 'react-native-side-drawer'
+import MenuDrawer from 'react-native-side-drawer';
+import {FlatList, ScrollView} from 'react-native-gesture-handler';
+import {ProgressChartData} from 'react-native-chart-kit/dist/ProgressChart';
 
 export interface navi {
-    navigation: StackNavigationProp<ModalNavigatorParamsList, 'Details'>
-    route: RouteProp<ModalNavigatorParamsList, 'Details'>
+  navigation: StackNavigationProp<ModalNavigatorParamsList, 'Details'>;
+  route: RouteProp<ModalNavigatorParamsList, 'Details'>;
 }
 
+const Details: FC<navi> = ({navigation, route}) => {
+  const [apidata, setApidata] = useState<any[]>([]);
+  const [details, setDetails] = useState<ProgressChartData>([]);
+  const [weight, setWeight] = useState<number>(0);
 
-const Details: FC<navi> = ({ navigation, route }) => {
+  const chartConfig = {
+    backgroundGradientFrom: '#FFFFFF',
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: '#FFFFFF',
+    backgroundGradientToOpacity: 0,
+    color: (opacity = 1) => `rgba( 0,0,0, ${opacity})`,
+    barPercentage: 0.7,
+  };
 
-    const [apidata, setApidata] = useState<any[]>([])
-    const [accuracy, setAccuracy] = useState<any[]>([])
-    const [weight,setWeight]= useState<number>()
-    
+  useEffect(() => {
+    async function fetchapi() {
+      await axios
+        .get(`${route.params.dataurl}`)
+        .then(response => {
+          setApidata(response.data.stats);
+          setWeight(response.data.weight);
+        })
+        .catch(error => console.log(error));
+    }
+    fetchapi();
+  }, []);
 
-    const chartConfig = {
-        backgroundGradientFrom: '#FFFFFF',
-        backgroundGradientFromOpacity: 0,
-        backgroundGradientTo: '#FFFFFF',
-        backgroundGradientToOpacity: 0,
-        color: (opacity = 1) => `rgba( 255,255,0, ${opacity})`,
-        barPercentage: 1,
+  useEffect(() => {
+    det(apidata);
+  }, [apidata]);
+
+  const det = apidata2 => {
+    console.log(apidata2);
+    let accuracy: number[] = [];
+    for (let i = 0; i < apidata.length; i++) {
+      let div = apidata2[i].base_stat;
+      accuracy.push(div / 109);
+    }
+    var data = {
+      labels: ['HP', 'Attack', 'Defence', 'S-ATK', 'S-DEF', 'Speed'],
+      data: accuracy,
     };
-    const DATA = [{
-        title: "Pokemon Data",
-        data: apidata
-    }]
-    useEffect(() => {
-        async function fetchapi() {
-            await axios.get(`${route.params.dataurl}`)
-                .then((response) => {
-                    setApidata(
-                        response.data.stats
-                    ),setWeight(response.data.weight)
-                })
-                .catch((error) => console.log(error));
-        }
-        fetchapi()
-    }, [])
+    setDetails(data);
+    console.log(accuracy);
+  };
 
-    const Rm = ({ datas }: { datas: any }) => {
-        if (accuracy.length < apidata.length) {
-            let div = ((datas.base_stat) / 109)
-            accuracy.push(div)
-            
-        }
-        return (
-            <View>
-                <Text style={styles.text1}>{datas.stat.name} - <Text style={styles.text2}>{Math.round(datas.base_stat / 109 * 100)}%</Text></Text>
-            </View>
-        )
-    }
-    const details = {
-        labels: ['HP', 'Attack', 'Defence', 'Sp-Attack', 'Sp-Defence', 'Speed'],
-        data: accuracy
-    }
-    
-    return (
+  return (
+    <LinearGradient
+      colors={['#ffcb05', '#ee1515']}
+      style={styles.linearGradient}
+      start={{x: -0.01, y: 0.6}}
+      end={{x: 0.9, y: 1}}>
+      <View>
+        <View style={styles.container}>
+          <Image
+            style={styles.img}
+            source={{uri: `${route.params.imageurl}`}}
+          />
+        </View>
+        <View style={styles.card}>
+          <ScrollView style={{height: '100%', width: '100%'}}>
+            <Text style={styles.text}> weight : </Text>
+            <Text style={styles.weight}> {weight} </Text>
+            <Image
+              style={styles.img2}
+              source={{
+                uri: 'https://www.freepnglogos.com/uploads/pokemon-png/ash-pokemon-png-file-26.png',
+              }}></Image>
+            <Image
+              style={styles.img3}
+              source={{
+                uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/2560px-International_Pok%C3%A9mon_logo.svg.png',
+              }}></Image>
 
-        <LinearGradient
-            colors={['#ffcb05', '#ee1515']}
-            style={styles.linearGradient}
-            start={{ x: -0.01, y: 0.6 }}
-            end={{ x: 0.9, y: 1 }}
-        >
-            <View style={styles.container}>
-                <View>
-                    <Image style={styles.img} source={{ uri: route.params.imageurl }}></Image>
-                    <Image style={styles.img2} source={{ uri: "https://icon-library.com/images/small-pokeball-icon/small-pokeball-icon-4.jpg" }}></Image>
-                </View>
-                
-                
-                    <SectionList
-                        style={styles.sectionstyle}
-                        sections={DATA}
-                        showsVerticalScrollIndicator={false}
-                        renderItem={({ item }) => <Rm datas={item} />}
-                    />
-                    <ProgressChart
-                        style={styles.chart}
-                        data={details}
-                        width={415}
-                        height={260}
-                        strokeWidth={10}
-                        radius={32}
-                        chartConfig={chartConfig}
-                        hideLegend={false}
-                    />
-                
+            <View
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                height: 250,
+                width: '100%',
+              }}>
+              <ProgressChart
+                style={styles.chart}
+                data={details}
+                width={Dimensions.get('window').width - 60}
+                height={200}
+                strokeWidth={10}
+                radius={35}
+                chartConfig={chartConfig}
+                hideLegend={false}
+              />
             </View>
-        </LinearGradient>
-    )
-}
+          </ScrollView>
+        </View>
+      </View>
+    </LinearGradient>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        margin: 7
-    },
-    img: {
-        width: "100%",
-        height: 350
-    },
-    img2: {
-        width: "90%",
-        height: 200,
-        position: "absolute",
-        left: 120,
-        top:310
-    },
-    chart: {
-        bottom: 0,
-        left: -45
-    },
-    text1: {
-        fontSize: 15,
-        fontWeight: "bold",
-        left: 20,
-        color: "black",
-    },
-    text2: {
-        color: "red",
-    },
-    linearGradient: {
-        flex: 1,
-        height: "100%",
-        justifyContent: 'center'
-    },
-    sectionstyle: {
-        flex: 2
-    },
-    button: {
-        alignItems: "center",
-        padding: 10,
-        height: 50,
-        width: "90%",
-        marginTop: 305,
-        margin: 12,
-        borderRadius: 9999,
-        backgroundColor: "black"
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  img: {
+    width: 300,
+    height: 300,
+  },
+  img2: {
+    width: 110,
+    height: 209,
+    top: 50,
+    left:20
+  },
+  img3: {
+    width: 250,
+    height: 90,
+    position: 'absolute',
+    top: 170,
+    left: 120,
+  },
+  chart: {
+    marginVertical: 10,
+    left: 10,
+    position: 'absolute',
+  },
+  linearGradient: {
+    flex: 1,
+    height: '100%',
+    justifyContent: 'center',
+  },
+  card: {
+    backgroundColor: 'white',
+    height: 390,
+    borderRadius: 10,
+    //padding: 5,
+    margin: 10,
+  },
+  text: {
+    color: 'red',
+    top: 10,
+    fontSize: 30,
+    textAlign: 'center',
+    //textShadowColor: "blue",
+    fontFamily: 'Pokemon Solid',
+    textShadowOffset: {width: 9, height: 3},
+    textShadowRadius: 10,
+  },
+  weight: {
+    color: '#ee8239',
+    top: 64,
+    fontSize: 30,
+    textAlign: 'center',
+    //textShadowColor: "blue",
+    fontFamily: 'Pokemon Solid',
+    textShadowOffset: {width: 9, height: 3},
+    textShadowRadius: 10,
+  },
+});
 
-    },
-    buttontext: {
-        color: "white",
-        fontWeight: "bold",
-        fontSize: 17
-    },
-})
-
-export default Details
+export default Details;

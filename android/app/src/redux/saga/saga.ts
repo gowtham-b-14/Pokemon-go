@@ -1,6 +1,7 @@
 import {takeLatest,call,put,all} from 'redux-saga/effects'
 import { FETCH_PRODUCTS_BEGIN} from "../actions/action";
 import axios from 'axios';
+
 function* actionWatcher(){
     yield takeLatest(FETCH_PRODUCTS_BEGIN, Data);
 }

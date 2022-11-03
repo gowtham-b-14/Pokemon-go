@@ -1,11 +1,11 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 
 export type userparams = {
-    name: String
-    city: string
-    phone: number
+    name: string
+    city: String
+    phone: Number
     email: string
-    password: string | number
+    password: String | number
 }
 
 export type ModalNavigatorParamsList = {
@@ -13,17 +13,22 @@ export type ModalNavigatorParamsList = {
 
     Loginpage: {
         name?: String
-        city?: string
-        phone?: number | String
+        city?: String
+        phone?: Number | String
         email?: string
-        password?: string | number
+        password?: String | Number
     } | undefined
     Visitpage: undefined
     Signuppage: undefined
-    Home: undefined
+    Home: {
+        total:Number
+    } | undefined
     Details: {
-        imageurl: string
+        imageurl: String
         dataurl: String
     } 
+    Totalpage:undefined
 }
+
+export type BasicDetails=[] | undefined
 

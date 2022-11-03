@@ -14,11 +14,11 @@ import { RouteProp } from "@react-navigation/native";
 
 export interface navi {
     navigation: StackNavigationProp<ModalNavigatorParamsList, 'Details'>
-    route: RouteProp<ModalNavigatorParamsList, 'Details'>
+    route: RouteProp<ModalNavigatorParamsList, 'Home'>
 }
 
-const Home: FC<navi> = ({ navigation }) => {
-
+const Home: FC<navi> = ({ navigation ,route}) => {
+    console.log("Home page opened")
     return (
         <LinearGradient
             colors={['#ffcb05', '#ee1515']}
@@ -26,7 +26,7 @@ const Home: FC<navi> = ({ navigation }) => {
             start={{ x: -0.01, y: 0.6 }}
             end={{ x: 0.9, y: 1 }}
         >
-            <Cards navigation={navigation} />
+            <Cards navigation={navigation} route={route}/>
         </LinearGradient>
     )
 }
