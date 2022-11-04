@@ -1,23 +1,20 @@
 import React, {FC, useState } from "react";
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   Image,
   View,
-  SectionList,
-  DrawerLayoutAndroidBase,
   TextInput,
   TouchableOpacity,
   ToastAndroid,
 } from 'react-native';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ModalNavigatorParamsList } from '../types/types';
+import { ModalNavigatorParamsList,userparams } from '../types/types';
 import { RouteProp } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 export interface navi {
   navigation:StackNavigationProp<ModalNavigatorParamsList, 'Loginpage'>
@@ -26,8 +23,8 @@ export interface navi {
 
 const Login :FC<navi>= ({ navigation,route}) => {
   
-  const [email, setEmail] = useState<String>("");
-  const [password, setPassword] = useState<String>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [eyeopen, setEyeopen] = useState(false)
   const [isusernamevalid, setUsernamevalid] = useState(false)
   const [ispasswordvalid, setPasswordValid] = useState(false)
@@ -41,19 +38,61 @@ const Login :FC<navi>= ({ navigation,route}) => {
     setPassword(pass);
   }
   //console.log(userdetails)
-  console.log("Login pagge oppened")
-  const login=()=>{
-    console.log(route.params)
-    if(route.params===undefined){
-      alert("please sign in to continue")
+  //console.log("Login pagge oppened")
+  // const login=()=>{
+  //   console.log(route.params)
+  //   if(route.params===undefined){
+  //     alert("please sign in to continue")
+  //   }
+  //   else if(route.params.email===email && route.params.password===password){
+  //     ToastAndroid.show("Login successfully", ToastAndroid.LONG)
+  //     navigation.navigate('Totalpage')
+  //   }else{
+  //     alert("Invalid email or password.")
+  //   }
+  // }
+  const authenticateUser = async (): Promise<void> => {
+    let users: string | null = await AsyncStorage.getItem('@users');
+    if (users == null || users == '[]') {
+      ToastAndroid.showWithGravity(
+        'User not found!',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM,
+      );
+    } else {
+      let usersJSON: userparams[] | [] = JSON.parse(users);
+      let particularUser: userparams[] | [] = usersJSON.filter(
+        user => user.email == email,
+      );
+      if (particularUser.length === 0) {
+        ToastAndroid.showWithGravity(
+          'Invalid Email or Password !',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
+      } else {
+        console.log('particularUser',particularUser)
+        if (particularUser[0].password === password) {
+          ToastAndroid.showWithGravity(
+            'User Logged In successfully!',
+            ToastAndroid.SHORT,
+            ToastAndroid.BOTTOM,
+          );
+          await AsyncStorage.setItem('@loggedUser', email);
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Totalpage', params: particularUser[0]}],
+          });
+        } else {
+          ToastAndroid.showWithGravity(
+            'Invalid Email or Password !',
+            ToastAndroid.SHORT,
+            ToastAndroid.BOTTOM,
+          );
+        }
+      }
     }
-    else if(route.params.email===email && route.params.password===password){
-      ToastAndroid.show("Login successfully", ToastAndroid.LONG)
-      navigation.navigate('Totalpage')
-    }else{
-      alert("Invalid email or password.")
-    }
-  }
+  };
   return (
     <View style={styles.container}>
       <View>
@@ -88,7 +127,7 @@ const Login :FC<navi>= ({ navigation,route}) => {
         <TouchableOpacity onPress={() => setEyeopen(!eyeopen)}><Icon2 name={(eyeopen) ? "eye" : "eye-off"} color="black" size={30} style={{ marginTop: "-12%", marginLeft: "87%" }} /></TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-         onPress={() => login()}
+         onPress={() => authenticateUser()}
         >
           <Text style={styles.buttontext}>Login</Text>
         </TouchableOpacity>

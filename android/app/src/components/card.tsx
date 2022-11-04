@@ -1,22 +1,13 @@
 import React, { FC, useState, useEffect } from 'react';
 import {
-    ImageBackground,
-    ListRenderItem,
     SectionList,
     StyleSheet,
-    Text,
-    TouchableOpacity,
     View,
-
 } from 'react-native';
-import axios from "axios";
-import { Card, Button, Title, Paragraph } from "react-native-paper"
+import { Card, Button} from "react-native-paper"
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ModalNavigatorParamsList } from '../types/types';
-import {fetchProductsBegin} from '../redux/actions/action';
-import { bindActionCreators } from 'redux';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { State } from '../redux/reducers';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store/store';
 import { fetchListOfPokemons } from '../redux/slice/slice';
 import { RouteProp } from '@react-navigation/native';
